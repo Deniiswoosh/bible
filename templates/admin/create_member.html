@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Add Member - Admin - Bible Accountability{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex bg-[#f8fafc]">
+    <aside class="w-64 bg-[#0f172a] text-slate-300 flex flex-col flex-shrink-0 min-h-screen">
+        <div>
+            <div class="p-6 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold">B</div>
+                <div class="leading-tight"><span class="font-bold text-white block">Bible</span><span class="text-slate-300 text-xs block">Accountability</span></div>
+            </div>
+            <nav class="px-4 space-y-1.5 mt-2">
+                <a href="{{ url_for('admin.dashboard') }}" class="flex items-center px-4 py-3 rounded-xl text-sm text-slate-400 hover:text-white hover:bg-slate-800/60">Dashboard</a>
+                <a href="{{ url_for('admin.members') }}" class="flex items-center px-4 py-3 rounded-xl text-sm text-white bg-blue-600">Members</a>
+            </nav>
+        </div>
+        <div class="p-4 border-t border-slate-800/80"><a href="{{ url_for('auth.logout') }}" class="text-sm text-slate-400 hover:text-rose-400">Logout</a></div>
+    </aside>
+
+    <main class="flex-grow min-w-0">
+        <header class="bg-white border-b border-slate-100 px-8 py-5 flex items-center gap-3 shadow-sm">
+            <a href="{{ url_for('admin.members') }}" class="text-slate-500 hover:text-slate-900">&larr;</a>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Add New Member</h1>
+        </header>
+        <div class="p-8 max-w-2xl w-full">
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_0_rgba(15,23,42,0.08)] p-8">
+                <p class="text-sm text-slate-500 mb-6">Create the member's login credentials. They can change this temporary password after signing in.</p>
+                <form method="POST" class="space-y-5">
+                    {{ form.hidden_tag() }}
+                    {% for field in [form.name, form.email, form.phone, form.residence, form.password, form.confirm_password] %}
+                    <div>
+                        {{ field.label(class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2") }}
+                        {{ field(class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500", autocomplete="new-password" if field.name in ['password', 'confirm_password'] else none) }}
+                        {% for error in field.errors %}<p class="text-rose-500 text-xs mt-1">{{ error }}</p>{% endfor %}
+                    </div>
+                    {% endfor %}
+                    <div class="flex items-center gap-3 pt-2">
+                        {{ form.submit(class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold") }}
+                        <a href="{{ url_for('admin.members') }}" class="px-6 py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

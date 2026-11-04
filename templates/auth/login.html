@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Bible Accountability System{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-b from-slate-200 via-blue-200 to-blue-400">
+
+    <!-- Background SVG mountain silhouettes for authentic background matching Page 8 mockup -->
+    <div class="absolute inset-0 z-0 pointer-events-none opacity-40">
+        <svg class="w-full h-full preserve-3d" viewBox="0 0 1440 900" fill="none" preserveAspectRatio="none">
+            <path d="M0 900L0 550C200 480 350 620 500 520C650 420 800 580 950 490C1100 400 1250 560 1440 450L1440 900Z" fill="#3b82f6" fill-opacity="0.3"/>
+            <path d="M0 900L0 650C250 580 400 700 600 600C800 500 1000 680 1200 580C1350 500 1400 540 1440 520L1440 900Z" fill="#2563eb" fill-opacity="0.4"/>
+            <path d="M0 900L0 720C300 680 450 750 700 680C950 610 1150 730 1440 640L1440 900Z" fill="#1d4ed8" fill-opacity="0.5"/>
+        </svg>
+    </div>
+
+    <!-- Login Card Container -->
+    <div class="relative z-10 max-w-md w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/40">
+
+        <!-- Header & Logo -->
+        <div class="text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 mb-4">
+                <!-- Open Bible with Cross Icon -->
+                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 3v13.55a2.5 2.5 0 0 0 2.45 2.45h7.05V5a2 2 0 0 0-2-2H12zM2.5 5v14h7.05A2.45 2.45 0 0 0 12 16.55V3H4.5a2 2 0 0 0-2 2z"/>
+                    <path d="M11 5.5h2v3h3v2h-3v5h-2v-5H8v-2h3v-3z" fill="#ffffff" />
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Bible Accountability</h1>
+            <p class="text-slate-500 text-sm mt-1">Stay in the Word. Stay Accountable.</p>
+        </div>
+
+        <!-- Divider with center dot -->
+        <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
+            <div class="relative flex justify-center text-xs uppercase"><span class="bg-white px-2 text-slate-400">•</span></div>
+        </div>
+
+        <!-- Login Form -->
+        <form method="POST" action="{{ url_for('auth.login') }}" class="space-y-5">
+            {{ form.csrf_token }}
+
+            <!-- Email Field -->
+            <div>
+                <label for="email" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Email</label>
+                <div class="relative rounded-xl shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </div>
+                    {{ form.email(class="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all", placeholder="Enter your email") }}
+                </div>
+                {% if form.email.errors %}
+                    <p class="text-rose-500 text-xs mt-1">{{ form.email.errors[0] }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Password Field -->
+            <div>
+                <label for="password" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Password</label>
+                <div class="relative rounded-xl shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    </div>
+                    {{ form.password(id="passwordInput", class="block w-full pl-11 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all", placeholder="Enter your password") }}
+                    <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none">
+                        <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    </button>
+                </div>
+                {% if form.password.errors %}
+                    <p class="text-rose-500 text-xs mt-1">{{ form.password.errors[0] }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit" class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all flex items-center justify-center gap-2 text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <span>Login</span>
+                </button>
+            </div>
+
+            <!-- Forgot Password Link -->
+            <div class="text-center pt-1">
+                <a href="{{ url_for('auth.forgot_password') }}" class="text-xs text-blue-600 hover:text-blue-800 font-medium">Forgot password?</a>
+            </div>
+        </form>
+
+        <!-- Quote Section at Bottom of Card -->
+        <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+            <div class="text-blue-600 text-xl font-serif font-bold mb-1">“</div>
+            <p class="text-slate-600 text-xs italic px-4">Your word is a lamp to my feet and a light to my path.</p>
+            <p class="text-blue-600 text-[11px] font-bold tracking-wider uppercase mt-1">PSALM 119:105</p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('passwordInput');
+        const eyeIcon = document.getElementById('eyeIcon');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.018 10.018 0 014.122-.863c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21M3 3l18 18"/>`;
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
+        }
+    }
+</script>
+{% endblock %}

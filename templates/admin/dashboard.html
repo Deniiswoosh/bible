@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Bible Accountability System{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex bg-[#f8fafc]">
+
+    <!-- Left Sidebar (Navy Blue matching Page 10 mockup) -->
+    <aside class="w-64 bg-[#0f172a] text-slate-300 flex flex-col justify-between flex-shrink-0 min-h-screen">
+        <div>
+            <!-- Sidebar Header / Logo -->
+            <div class="p-6 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 3v13.55a2.5 2.5 0 0 0 2.45 2.45h7.05V5a2 2 0 0 0-2-2H12zM2.5 5v14h7.05A2.45 2.45 0 0 0 12 16.55V3H4.5a2 2 0 0 0-2 2z"/>
+                        <path d="M11 5.5h2v3h3v2h-3v5h-2v-5H8v-2h3v-3z" fill="#ffffff" />
+                    </svg>
+                </div>
+                <div class="leading-tight">
+                    <span class="font-bold text-white tracking-tight block">Bible</span>
+                    <span class="font-medium text-slate-300 text-xs tracking-tight block">Accountability</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="px-4 space-y-1.5 mt-2">
+                <a href="{{ url_for('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-white bg-blue-600 shadow-md shadow-blue-600/30 transition-all">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{{ url_for('admin.members') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <span>Members</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Sidebar Bottom Logout -->
+        <div class="p-4 border-t border-slate-800/80">
+            <a href="{{ url_for('auth.logout') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Right Area -->
+    <main class="flex-grow flex flex-col min-w-0 overflow-y-auto">
+
+        <!-- Top Main Header -->
+        <header class="bg-white border-b border-slate-100 px-8 py-5 flex items-center justify-between shadow-sm sticky top-0 z-20">
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+
+            <div class="flex items-center gap-6">
+                <!-- Date Selector / Indicator -->
+                <div class="flex items-center gap-2 text-slate-600 bg-slate-100/80 px-3.5 py-1.5 rounded-full text-xs font-medium border border-slate-200">
+                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span>{{ formatted_date }}</span>
+                </div>
+
+                <!-- Admin Profile Avatar -->
+                <div class="relative" id="adminDropdown">
+                    <button onclick="toggleAdminMenu()" class="flex items-center gap-2 hover:bg-slate-50 p-1.5 px-3 rounded-full transition-all focus:outline-none">
+                        <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-sm">
+                            A
+                        </div>
+                        <span class="text-xs font-semibold text-slate-700">Admin</span>
+                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="adminMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-1 text-slate-700 z-50">
+                        <a href="{{ url_for('member.dashboard') }}" class="block px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50">Switch to Member View</a>
+                        <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Body Padding Container -->
+        <div class="p-8 space-y-8 max-w-7xl w-full">
+
+            <!-- 3 Stat Cards Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+                <!-- Card 1: Total Members -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_4px_20px_0_rgba(15,23,42,0.06)] flex items-center gap-5 hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0 shadow-sm shadow-blue-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Members</p>
+                        <p class="text-3xl font-extrabold text-slate-900 mt-0.5 tracking-tight">{{ total_members }}</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Submitted Today -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_4px_20px_0_rgba(15,23,42,0.06)] flex items-center gap-5 hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm shadow-emerald-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Submitted Today</p>
+                        <p class="text-3xl font-extrabold text-emerald-600 mt-0.5 tracking-tight">{{ submitted_today }}</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Missing Today (with appealing pending clock/timer icon instead of X) -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_4px_20px_0_rgba(15,23,42,0.06)] flex items-center gap-5 hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0 shadow-sm shadow-amber-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Missing Today</p>
+                        <p class="text-3xl font-extrabold text-amber-600 mt-0.5 tracking-tight">{{ missing_today }}</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Main Layout: Table + Side Drawer Panel -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+                <!-- Members Overview Table Container (8 cols or 7 cols) -->
+                <div class="{% if selected_reading_detail %}lg:col-span-7{% else %}lg:col-span-12{% endif %} bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_0_rgba(15,23,42,0.06)] overflow-hidden transition-all duration-300">
+
+                    <!-- Table Header with Search -->
+                    <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900 tracking-tight">Members Overview</h2>
+                            <p class="text-xs text-slate-400 font-medium mt-0.5">Daily reading accountability status</p>
+                        </div>
+
+                        <form method="GET" action="{{ url_for('admin.dashboard') }}" class="relative max-w-xs w-full">
+                            <input type="hidden" name="date" value="{{ target_date_str }}">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </div>
+                            <input type="text" name="search" value="{{ search_query }}" placeholder="Search members..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                        </form>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-slate-600">
+                            <thead class="bg-slate-50/80 text-slate-400 font-semibold uppercase tracking-widest text-[11px] border-b border-slate-100">
+                                <tr>
+                                    <th class="py-3.5 px-6">Name</th>
+                                    <th class="py-3.5 px-4">Date</th>
+                                    <th class="py-3.5 px-4">Passage</th>
+                                    <th class="py-3.5 px-4 text-center">Status</th>
+                                    <th class="py-3.5 px-6 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 font-medium">
+                                {% for m in member_rows %}
+                                <tr class="hover:bg-blue-50/30 transition-colors {% if selected_member_id == m.id %}bg-blue-50/50 border-l-4 border-l-blue-600{% endif %}">
+
+                                    <!-- Name Column -->
+                                    <td class="py-4 px-6">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shadow-sm {{ m.color_class }}">
+                                                {{ m.initial }}
+                                            </div>
+                                            <span class="font-semibold text-slate-900 text-sm">{{ m.name }}</span>
+                                        </div>
+                                    </td>
+
+                                    <!-- Date Column -->
+                                    <td class="py-4 px-4 text-slate-500 font-normal text-xs">
+                                        {{ m.date }}
+                                    </td>
+
+                                    <!-- Passage Column -->
+                                    <td class="py-4 px-4">
+                                        {% if m.status == 'submitted' %}
+                                            <span class="inline-flex items-center gap-1.5 font-semibold text-slate-900 text-xs">
+                                                <svg class="w-3.5 h-3.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                                {{ m.passage }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-slate-300 font-normal">—</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Status Column (Friendly icons: Checkmark for Submitted, Clock/Timer for Missing) -->
+                                    <td class="py-4 px-4 text-center">
+                                        {% if m.status == 'submitted' %}
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-sm">
+                                                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                                <span>Submitted</span>
+                                            </span>
+                                        {% elif m.status == 'missing' %}
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-sm">
+                                                <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <span class="text-rose-700">Missing</span>
+                                            </span>
+                                        {% else %}
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white text-slate-500 border border-slate-200 shadow-sm">Pending</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Action Column -->
+                                    <td class="py-4 px-6 text-center">
+                                        <a href="{{ url_for('admin.dashboard', selected_id=m.id, search=search_query, date=target_date_str, page=page) }}"
+                                           title="View reading details"
+                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-white hover:bg-blue-600 hover:border-blue-600 transition-all shadow-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="py-8 text-center text-slate-400">No members found matching your search.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Footer matching Page 10 screenshot -->
+                    <div class="px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-medium">
+                        <div>
+                            Showing {{ start_item }} to {{ end_item }} of {{ total_items }} members
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            {% if page > 1 %}
+                            <a href="{{ url_for('admin.dashboard', page=page-1, search=search_query, date=target_date_str, selected_id=selected_member_id) }}" class="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-50 text-slate-600">&lt;</a>
+                            {% else %}
+                            <span class="w-7 h-7 rounded-lg border border-slate-100 flex items-center justify-center text-slate-300 cursor-not-allowed">&lt;</span>
+                            {% endif %}
+
+                            {% for p in range(1, total_pages + 1) %}
+                                {% if p == page %}
+                                    <span class="w-7 h-7 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center shadow-sm">{{ p }}</span>
+                                {% else %}
+                                    <a href="{{ url_for('admin.dashboard', page=p, search=search_query, date=target_date_str, selected_id=selected_member_id) }}" class="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-50 text-slate-600 font-medium">{{ p }}</a>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page < total_pages %}
+                            <a href="{{ url_for('admin.dashboard', page=page+1, search=search_query, date=target_date_str, selected_id=selected_member_id) }}" class="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-50 text-slate-600">&gt;</a>
+                            {% else %}
+                            <span class="w-7 h-7 rounded-lg border border-slate-100 flex items-center justify-center text-slate-300 cursor-not-allowed">&gt;</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Detail Panel Drawer ("Dennis - Today's Submission") -->
+                {% if selected_reading_detail %}
+                <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_0_rgba(15,23,42,0.08)] p-6 relative">
+
+                    <!-- Drawer Close Button -->
+                    <a href="{{ url_for('admin.dashboard', search=search_query, date=target_date_str, page=page) }}" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1.5 rounded-xl hover:bg-slate-100 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </a>
+
+                    <!-- Drawer Header -->
+                    <div class="pr-8 mb-6 border-b border-slate-100 pb-4">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 rounded-xl bg-blue-600 text-white font-bold text-sm flex items-center justify-center shadow-sm">
+                                {{ selected_reading_detail.member.name[0].upper() }}
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 tracking-tight leading-tight">
+                                    {{ selected_reading_detail.member.name }}
+                                </h3>
+                                <p class="text-xs text-blue-600 font-medium">Today's Submission</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium mt-2 bg-slate-50 px-3 py-1 rounded-lg w-fit">
+                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span>{{ selected_reading_detail.date_str }}</span>
+                        </div>
+                    </div>
+
+                    {% if selected_reading_detail.reading %}
+                    <div class="space-y-5">
+
+                        <!-- Bible Passage Box -->
+                        <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Bible Passage</p>
+                                <p class="text-sm font-bold text-slate-900">{{ selected_reading_detail.reading.passage }}</p>
+                            </div>
+                        </div>
+
+                        <!-- What did you learn from today's passage? -->
+                        <div>
+                            <p class="text-xs font-semibold text-slate-700 mb-2">What did you learn from today's passage?</p>
+                            <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-4 text-xs text-slate-700 leading-relaxed">
+                                {{ selected_reading_detail.reading.reflection }}
+                            </div>
+                        </div>
+
+                        <!-- What will you apply from this? -->
+                        <div>
+                            <p class="text-xs font-semibold text-slate-700 mb-2">What will you apply from this?</p>
+                            <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-4 text-xs text-slate-700 leading-relaxed">
+                                {{ selected_reading_detail.reading.application }}
+                            </div>
+                        </div>
+
+                        <!-- Prayer (Optional) -->
+                        <div>
+                            <p class="text-xs font-semibold text-slate-700 mb-2">Prayer (Optional)</p>
+                            <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-4 text-xs text-slate-700 leading-relaxed italic">
+                                {% if selected_reading_detail.reading.prayer %}
+                                    {{ selected_reading_detail.reading.prayer }}
+                                {% else %}
+                                    <span class="text-slate-400 font-normal">No prayer provided.</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Submitted Time Footer -->
+                        <div class="pt-2 flex items-center gap-2 text-[11px] text-slate-400 font-medium">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Submitted at {{ selected_reading_detail.reading.submitted_at.strftime('%I:%M %p') }}</span>
+                        </div>
+
+                    </div>
+                    {% else %}
+                    <div class="py-12 text-center text-slate-400">
+                        <svg class="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <p class="text-sm font-medium text-slate-600">No submission recorded for this date.</p>
+                    </div>
+                    {% endif %}
+
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    function toggleAdminMenu() {
+        const menu = document.getElementById('adminMenu');
+        if (menu) menu.classList.toggle('hidden');
+    }
+    document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('adminDropdown');
+        const menu = document.getElementById('adminMenu');
+        if (dropdown && menu && !dropdown.contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+</script>
+{% endblock %}

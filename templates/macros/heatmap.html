@@ -1,0 +1,33 @@
+{% macro render_heatmap(heatmap) %}
+<div class="heatmap-shell">
+    <div class="heatmap-legend" aria-label="Contribution status legend">
+        <span><i class="heatmap-dot submitted"></i> Submitted</span>
+        <span><i class="heatmap-dot missing"></i> Missed</span>
+        <span><i class="heatmap-dot pending"></i> Pending</span>
+    </div>
+
+    <div class="heatmap-months">
+        {% for month in heatmap.months %}
+        <section class="heatmap-month" aria-label="{{ month.name }} {{ heatmap.year }}">
+            <h3>{{ month.name }}</h3>
+            <div class="heatmap-weekdays">
+                {% for weekday in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
+                <span>{{ weekday }}</span>
+                {% endfor %}
+            </div>
+            <div class="heatmap-grid">
+                {% for week in month.weeks %}
+                    {% for cell in week %}
+                        {% if cell %}
+                        <div class="heatmap-cell {{ cell.status }}" title="{{ cell.date.strftime('%B %d, %Y') }}: {{ cell.status|capitalize }}">
+                            <span>{{ cell.day }}</span>
+                        </div>
+                        {% else %}<div class="heatmap-cell empty"></div>{% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </section>
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}
