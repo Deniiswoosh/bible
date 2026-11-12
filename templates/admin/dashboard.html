@@ -1,58 +1,20 @@
 {% extends "base.html" %}
+{% from "macros/admin_sidebar.html" import render_admin_sidebar %}
 
 {% block title %}Admin Dashboard - Bible Accountability System{% endblock %}
 
 {% block body %}
-<div class="min-h-screen flex bg-[#f8fafc]">
-
-    <!-- Left Sidebar (Navy Blue matching Page 10 mockup) -->
-    <aside class="w-64 bg-[#0f172a] text-slate-300 flex flex-col justify-between flex-shrink-0 min-h-screen">
-        <div>
-            <!-- Sidebar Header / Logo -->
-            <div class="p-6 flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 3v13.55a2.5 2.5 0 0 0 2.45 2.45h7.05V5a2 2 0 0 0-2-2H12zM2.5 5v14h7.05A2.45 2.45 0 0 0 12 16.55V3H4.5a2 2 0 0 0-2 2z"/>
-                        <path d="M11 5.5h2v3h3v2h-3v5h-2v-5H8v-2h3v-3z" fill="#ffffff" />
-                    </svg>
-                </div>
-                <div class="leading-tight">
-                    <span class="font-bold text-white tracking-tight block">Bible</span>
-                    <span class="font-medium text-slate-300 text-xs tracking-tight block">Accountability</span>
-                </div>
-            </div>
-
-            <!-- Navigation Links -->
-            <nav class="px-4 space-y-1.5 mt-2">
-                <a href="{{ url_for('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-white bg-blue-600 shadow-md shadow-blue-600/30 transition-all">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                    <span>Dashboard</span>
-                </a>
-
-                <a href="{{ url_for('admin.members') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">
-                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    <span>Members</span>
-                </a>
-            </nav>
-        </div>
-
-        <!-- Sidebar Bottom Logout -->
-        <div class="p-4 border-t border-slate-800/80">
-            <a href="{{ url_for('auth.logout') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                <span>Logout</span>
-            </a>
-        </div>
-    </aside>
+<div class="min-h-screen flex flex-col md:flex-row bg-[#f8fafc]">
+    {{ render_admin_sidebar('dashboard') }}
 
     <!-- Main Content Right Area -->
     <main class="flex-grow flex flex-col min-w-0 overflow-y-auto">
 
         <!-- Top Main Header -->
-        <header class="bg-white border-b border-slate-100 px-8 py-5 flex items-center justify-between shadow-sm sticky top-0 z-20">
-            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+        <header class="bg-white border-b border-slate-100 px-4 py-4 sm:px-8 sm:py-5 flex flex-wrap items-center justify-between gap-3 shadow-sm sticky top-0 z-20">
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
 
-            <div class="flex items-center gap-6">
+            <div class="flex flex-wrap items-center gap-2 sm:gap-6">
                 <!-- Date Selector / Indicator -->
                 <div class="flex items-center gap-2 text-slate-600 bg-slate-100/80 px-3.5 py-1.5 rounded-full text-xs font-medium border border-slate-200">
                     <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -77,7 +39,7 @@
         </header>
 
         <!-- Main Body Padding Container -->
-        <div class="p-8 space-y-8 max-w-7xl w-full">
+        <div class="p-4 sm:p-8 space-y-6 sm:space-y-8 max-w-7xl w-full">
 
             <!-- 3 Stat Cards Row -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -124,7 +86,7 @@
                 <div class="{% if selected_reading_detail %}lg:col-span-7{% else %}lg:col-span-12{% endif %} bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_0_rgba(15,23,42,0.06)] overflow-hidden transition-all duration-300">
 
                     <!-- Table Header with Search -->
-                    <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h2 class="text-lg font-bold text-slate-900 tracking-tight">Members Overview</h2>
                             <p class="text-xs text-slate-400 font-medium mt-0.5">Daily reading accountability status</p>
@@ -141,7 +103,7 @@
 
                     <!-- Table -->
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs text-slate-600">
+                        <table class="w-full min-w-[640px] text-left text-xs text-slate-600">
                             <thead class="bg-slate-50/80 text-slate-400 font-semibold uppercase tracking-widest text-[11px] border-b border-slate-100">
                                 <tr>
                                     <th class="py-3.5 px-6">Name</th>

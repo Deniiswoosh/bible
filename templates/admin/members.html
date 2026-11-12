@@ -1,12 +1,16 @@
 {% extends "base.html" %}
+{% from "macros/admin_sidebar.html" import render_admin_sidebar %}
 
 {% block title %}Members Directory - Admin - Bible Accountability{% endblock %}
 
 {% block body %}
-<div class="min-h-screen flex bg-[#f8fafc]">
+<div class="min-h-screen flex flex-col md:flex-row bg-[#f8fafc]">
+    <div class="md:hidden">
+        {{ render_admin_sidebar('members') }}
+    </div>
 
     <!-- Left Sidebar -->
-    <aside class="w-64 bg-[#0f172a] text-slate-300 flex flex-col justify-between flex-shrink-0 min-h-screen">
+    <aside class="hidden md:flex w-64 bg-[#0f172a] text-slate-300 flex-col justify-between flex-shrink-0 min-h-screen">
         <div>
             <div class="p-6 flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
@@ -44,14 +48,14 @@
 
     <!-- Main Content -->
     <main class="flex-grow flex flex-col min-w-0 overflow-y-auto">
-        <header class="bg-white border-b border-slate-100 px-8 py-5 flex items-center justify-between shadow-sm sticky top-0 z-20">
-            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Members Directory</h1>
-            <a href="{{ url_for('admin.create_member') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm">
+        <header class="bg-white border-b border-slate-100 px-4 py-4 sm:px-8 sm:py-5 flex flex-wrap items-center justify-between gap-3 shadow-sm sticky top-0 z-20">
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Members Directory</h1>
+            <a href="{{ url_for('admin.create_member') }}" class="inline-flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm">
                 <span class="text-lg leading-none">+</span> Add Member
             </a>
         </header>
 
-        <div class="p-8 max-w-7xl w-full">
+        <div class="p-4 sm:p-8 max-w-7xl w-full">
             <!-- Flash messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -68,7 +72,7 @@
 
             <!-- Members Card with enhanced shadow -->
             <div class="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_0_rgba(15,23,42,0.08)] overflow-hidden">
-                <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
                     <h2 class="text-lg font-bold text-slate-900">All Registered Members</h2>
                     <form method="GET" action="{{ url_for('admin.members') }}" class="relative max-w-xs w-full">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -79,7 +83,7 @@
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
+                    <table class="w-full min-w-[760px] text-left text-sm">
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-200">
                                 <th class="py-3.5 px-6 text-[11px] font-semibold text-slate-400 uppercase tracking-widest">Member</th>
@@ -214,11 +218,11 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center" style="display:none;">
+<div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center overflow-y-auto p-4" style="display:none;">
     <!-- Backdrop -->
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
     <!-- Modal card -->
-    <div class="relative bg-white rounded-2xl shadow-2xl shadow-slate-900/20 border border-slate-100 p-8 max-w-sm w-full mx-4 flex flex-col items-center gap-5">
+    <div class="relative bg-white rounded-2xl shadow-2xl shadow-slate-900/20 border border-slate-100 p-5 sm:p-8 max-w-sm w-full my-auto flex flex-col items-center gap-5">
         <!-- Icon -->
         <div class="w-14 h-14 rounded-full bg-rose-50 flex items-center justify-center">
             <svg class="w-7 h-7 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +233,7 @@
             <h3 class="text-lg font-bold text-slate-900 mb-1">Delete Member?</h3>
             <p class="text-sm text-slate-500">You are about to permanently delete <span id="deleteMemberName" class="font-semibold text-slate-800"></span>. This action cannot be undone.</p>
         </div>
-        <div class="flex gap-3 w-full">
+        <div class="flex flex-col-reverse sm:flex-row gap-3 w-full">
             <button onclick="closeDeleteModal()" class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all">Cancel</button>
             <form id="deleteForm" method="POST" class="flex-1">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
